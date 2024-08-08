@@ -1,7 +1,15 @@
+import { Server } from "bun";
 import { Elysia } from "elysia";
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+import api from "./api";
+
+const app = new Elysia()
+  .use(api)
+  .get("/", () => "Hello Elysia")
+  .listen(Bun.env.PORT || 3000);
+
+const { hostname, port } = app.server as Server;
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at http://${hostname}:${port}`
 );
