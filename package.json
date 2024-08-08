@@ -2,14 +2,16 @@
   "name": "elysia-api",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "bunx prisma generate",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "elysia": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "prisma": "^5.18.0"
   },
   "module": "src/index.js"
 }

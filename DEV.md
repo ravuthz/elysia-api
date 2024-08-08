@@ -6,4 +6,8 @@
 
 bun install
 
+bun add --dev prisma
+bun add @prisma/client
+bunx prisma init
+
 ```
