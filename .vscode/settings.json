@@ -1,0 +1,12 @@
+{
+  "jestrunner.jestCommand": "bun test",
+  "jestrunner.debugOptions": {
+    "runtimeArgs": [
+      "test",
+      "--runInBand",
+      "--no-cache",
+      "--watchAll=false",
+      "--color"
+    ]
+  }
+}

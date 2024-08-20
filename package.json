@@ -3,9 +3,16 @@
   "version": "1.0.50",
   "scripts": {
     "preinstall": "bunx prisma generate",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "test": "bun test",
+    "prisma": "prisma",
+    "db:generate": "bunx prisma generate",
+    "db:migrate": "bunx prisma migrate",
+    "db:seed": "bunx prisma db seed",
+    "db:push": "bunx prisma db push"
   },
   "dependencies": {
+    "@elysiajs/swagger": "^1.1.0",
     "@prisma/client": "^5.18.0",
     "elysia": "latest"
   },
@@ -13,5 +20,9 @@
     "bun-types": "latest",
     "prisma": "^5.18.0"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "prisma": {
+    "schema": "./src/database/schema.prisma",
+    "seed": "bun ./src/database/seed/index.ts"
+  }
 }
