@@ -1,10 +1,10 @@
 import { Server } from "bun";
 import { Elysia } from "elysia";
 
-import api from "./api";
+import routers from "./routes";
 
 const app = new Elysia()
-  .use(api)
+  .use(routers.build())
   .get("/", () => "Hello Elysia")
   .listen(Bun.env.PORT || 3000);
 
