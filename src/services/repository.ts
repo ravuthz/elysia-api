@@ -1,7 +1,7 @@
 import { NotFoundError } from 'elysia';
-import db from './database';
 import { Prisma } from '@prisma/client';
-import { ModelKey } from '@prisma/client/runtime/library';
+
+import db from './database';
 
 type RecordAny = Record<string, any> | any;
 
@@ -28,7 +28,18 @@ class CrudRepository<CreateDto = RecordAny, UpdateDto = RecordAny> {
     }
 
     async paginate(options: RecordAny = {}) {
-        const { page: queryPage, size: querySize, select, ...query } = options;
+        let select = options.select || {};
+        const { page: queryPage, size: querySize, selectOnly, ...query } = options;
+
+        if (Array.isArray(selectOnly) && selectOnly.length > 0) {
+            const mapSelect: Prisma.UserSelect = selectOnly
+                .reduce((acc, key) => {
+                    acc[key] = true;
+                    return acc;
+                }, {} as Record<string, boolean>)
+
+            select = { ...select, ...mapSelect };
+        }
 
         const size = (+querySize || 10);
         const page = (+queryPage || 1);
@@ -45,8 +56,8 @@ class CrudRepository<CreateDto = RecordAny, UpdateDto = RecordAny> {
         return this.model.findFirst(query);
     }
 
-    async findById(id: number) {
-        const item = await this.findOne({ id });
+    async findById(id: string) {
+        const item = await this.findOne({ id: Number(id) });
         if (!item) {
             throw new NotFoundError(`${this.key} not found.`);
         }
@@ -57,32 +68,17 @@ class CrudRepository<CreateDto = RecordAny, UpdateDto = RecordAny> {
         return await this.model.create({ data });
     }
 
-    async update(id: number, data: UpdateDto) {
-        try {
-            return await this.model.update({
-                where: { id },
-                data,
-            });
-        } catch (e: any) {
-            if (e.code == 'P2025') {
-                throw new NotFoundError(`${this.key} not found.`);
-            }
-            throw e;
-        }
+    async update(id: string, data: UpdateDto) {
+        return await this.model.update({
+            where: { id },
+            data,
+        });
     }
 
-    async destroy(id: number) {
-        try {
-            await this.model.delete({
-                where: { id },
-            });
-            return {};
-        } catch (e: any) {
-            if (e.code == 'P2025') {
-                throw new NotFoundError(`${this.key} not found.`);
-            }
-            throw e;
-        }
+    async destroy(id: string) {
+        return await this.model.delete({
+            where: { id },
+        });
     }
 }
 
